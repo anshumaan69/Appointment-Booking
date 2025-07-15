@@ -4,9 +4,9 @@ import { useAuth } from "@/contexts/AuthContext"
 import { Button } from "@/components/ui/button"
 
 export function UserNav() {
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, logout, isLoggedIn } = useAuth()
 
-  if (!isAuthenticated || !user) {
+  if (!isLoggedIn || !user) {
     return null
   }
 

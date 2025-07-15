@@ -4,7 +4,7 @@ import {hashPassword} from "@/lib/hash"
 
 
 
-export async function POST(req){
+export async function POST(req: Request){
     await connectDB();
     const {name,email,password} = await req.json()
 
@@ -17,7 +17,7 @@ export async function POST(req){
 
     const hashed = await hashPassword(password)
 
-    const user = await User.create({
+    await User.create({
         name,
         email,
         password:hashed

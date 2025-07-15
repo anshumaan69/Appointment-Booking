@@ -52,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Register function - call your API to create new user
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    try {rc refspec main does not match any
+    try {
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

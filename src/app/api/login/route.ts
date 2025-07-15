@@ -3,7 +3,7 @@ import User from "@/models/user"
 import { comparePassword } from "@/lib/hash"
 import {generateToken,setTokenCookie} from "@/lib/auth"
 
-export async function POST(req){
+export async function POST(req: Request){
     await connectDB();
     const {email,password} = await req.json()
 
