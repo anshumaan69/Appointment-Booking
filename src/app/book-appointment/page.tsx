@@ -37,11 +37,11 @@ const BookingPage = () => {
     setIsSubmitting(true)
 
     try {
-      // For now, just log the data - later we'll send to API
+      // TODO: This will be updated when we implement appointment booking API
       console.log("Booking data:", {
         date: selectedDate,
         time: selectedTime,
-        service: selectedService
+        serviceId: selectedService  // Now this contains the service ID from database
       })
       
       setSuccess("Appointment booked successfully!")

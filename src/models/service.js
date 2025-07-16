@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 
-const serviceShema=({
+const serviceSchema=new mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -25,4 +25,4 @@ const serviceShema=({
 })
 
 
-export default mongoose.models.Service || mongoose.model("Service",serviceShema)
+export default mongoose.models.Service || mongoose.model("Service",serviceSchema)

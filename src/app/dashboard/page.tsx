@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { ModeToggle } from "@/components/Dark-toggle"
+
 
 export default function Dashboard() {
   const { user, isLoggedIn, logout } = useAuth()
@@ -28,7 +30,8 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <Button onClick={logout} variant="outline">
           Logout
-        </Button>
+        </Button> 
+        <ModeToggle />
       </div>
       
       <Card>
