@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState,useEffect} from 'react'
 import  { Calendar24 } from '@/components/DateAndTime'
 import { SelectDemo } from '@/components/selector'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ const BookingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string>("")
   const [success, setSuccess] = useState<string>("")
+  
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,23 +38,34 @@ const BookingPage = () => {
     setIsSubmitting(true)
 
     try {
-      // TODO: This will be updated when we implement appointment booking API
-      console.log("Booking data:", {
-        date: selectedDate,
-        time: selectedTime,
-        serviceId: selectedService  // Now this contains the service ID from database
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          date: selectedDate.toISOString().split('T')[0],
+          timeSlot: selectedTime,
+          serviceId: selectedService
+        })
       })
-      
-      setSuccess("Appointment booked successfully!")
-      
-      // Reset form
-      setSelectedDate(null)
-      setSelectedTime("")
-      setSelectedService("")
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Success - show success message and reset form
+        setSuccess("Appointment booked successfully!")
+        setSelectedDate(null)
+        setSelectedTime("")
+        setSelectedService("")
+      } else {
+        // API returned an error
+        setError(data.error || "Failed to book appointment. Please try again.")
+      }
       
     } catch (err) {
       console.error('Booking error:', err)
-      setError("Failed to book appointment. Please try again.")
+      setError("Network error. Please check your connection and try again.")
     } finally {
       setIsSubmitting(false)
     }
