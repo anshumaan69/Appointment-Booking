@@ -1,28 +1,3 @@
-/*
- * APPOINTMENTS API - COMPLETED ✅
- * 
- * This file handles creating new appointments when users book through the booking form.
- * The BookingPage component submits form data here.
- * 
- * ✅ STEP 1: Import required dependencies - COMPLETED
- * ✅ STEP 2: Create POST function to book appointment - COMPLETED
- * ✅ STEP 3: Add validation logic - COMPLETED
- * ✅ STEP 4: Handle booking conflicts - COMPLETED
- * ✅ STEP 5: Simplified and optimized - COMPLETED
- * 
- * READY FOR TESTING AND INTEGRATION!
- * 
- * API Endpoint: POST /api/appointments
- * Required fields: { serviceId, date, timeSlot }
- * Authentication: Required (JWT token in cookies)
- * 
- * Features implemented:
- * - User authentication
- * - Input validation (date, time, service)
- * - Conflict prevention (no double booking)
- * - Database operations (create, populate)
- * - Error handling
- */
 
 import connectDB from "@/utils/dbconfig";
 import Appointment from "@/models/appointment";
@@ -67,9 +42,9 @@ export async function POST(request: Request) {
         }
         
         // Basic time validation
-        const timeSlotPattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+        const timeSlotPattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
         if (!timeSlotPattern.test(timeSlot)) {
-            return NextResponse.json({ error: "Invalid time format. Use HH:MM (e.g., 09:00)" }, { status: 400 });
+            return NextResponse.json({ error: "Invalid time format. Use HH:MM:SS format (e.g., 09:00:00)" }, { status: 400 });
         }
         
         // Basic validation - check if service exists
@@ -82,6 +57,7 @@ export async function POST(request: Request) {
         const existingAppointment = await Appointment.findOne({
             date: date,
             timeSlot: timeSlot,
+            //This returns the quesry having status not equals cancelled
             status: { $ne: "cancelled" }
         });
         

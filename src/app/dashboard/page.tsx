@@ -18,15 +18,11 @@ import {
 
 export default function Dashboard() {
   const { user, isLoggedIn, logout } = useAuth()
-  
-  // State management for appointments
-  const [appointments, setAppointments] = useState<any[]>([])
+  const [appointments, setAppointments] = useState([] as any)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  
   const router = useRouter()
 
-  // Fetch appointments from API
   const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true)
@@ -34,55 +30,8 @@ export default function Dashboard() {
       
       const response = await fetch('/api/appointments/user')
       const data = await response.json()
+      1
       
-      if (response.ok) {
-        setAppointments(data)
-      } else {
-        // Handle API errors
-        if (response.status === 401) {
-          // Authentication error - redirect to login
-          router.push('/login')
-        } else {
-          setError(data.error || "Failed to fetch appointments")
-        }
-      }
-    } catch (err) {
-      console.error('Error fetching appointments:', err)
-      setError("Network error. Please check your connection and try again.")
-    } finally {
-      setLoading(false)
-    }
-  }, [router])
-
-  // Fetch appointments when component mounts
-  useEffect(() => {
-    if (isLoggedIn) {
-      fetchAppointments()
-    }
-  }, [isLoggedIn, fetchAppointments])
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
-
-  // If not logged in, redirect to login
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/login')
-    }
-  }, [isLoggedIn, router])
-
-  // Don't show dashboard if not logged in
-  if (!isLoggedIn) {
-    return <div>Please log in...</div>
-  }
-
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
@@ -91,6 +40,9 @@ export default function Dashboard() {
           <Link href="/book-appointment">
             <Button>Book New Appointment</Button>
           </Link>
+          <Button onClick={chatBot} variant="outline">
+            ChatBot
+          </Button> 
           <Button onClick={logout} variant="outline">
             Logout
           </Button> 
@@ -141,7 +93,6 @@ export default function Dashboard() {
               </Link>
             </div>
           )}
-          
           {!loading && !error && appointments.length > 0 && (
             <Table>
               <TableHeader>

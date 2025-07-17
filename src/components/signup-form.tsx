@@ -13,26 +13,49 @@ export function Signupform({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+
+
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+
+
+
+
+
+
   const router = useRouter()
+
+
+
+  //This will help in gettoing the register user function from auth context
   const { register } = useAuth()
 
+
+  //To perform an asynchronous operation of submitting the form 
+
   const handleSubmit = async (e: React.FormEvent) => {
+
+    //This prevents the default browser behavior(reloading the page when the form is submitted)
     e.preventDefault()
+    //This tells the app the form is submitting
     setIsLoading(true)
+    //Clears any previous errors before submitting the application form or when we rerender the page
     setError("")
 
     try {
-      const success = await register(name, email, password)
 
+      //this is an api call to the register function to check if registerred successfully otherwise return a false
+      const success = await register(name, email, password)
+      //The api tells whether it was a success 
       if (success) {
+        //success is stored as true in the frontend 
         setSuccess(true)
-        // Redirect to login after successful registration
+        //then after waithing for 2 second(SOME mf'S call this ux we push them to the router page )
         setTimeout(() => {
           router.push("/login")
         }, 2000)
@@ -45,6 +68,8 @@ export function Signupform({
       setIsLoading(false)
     }
   }
+
+  //This code will be shown on the fucking screen
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -62,6 +87,12 @@ export function Signupform({
                   {error}
                 </div>
               )}
+
+
+
+              {/* Conditionally render if a user is logged in 
+              if success is true then render the component
+              otherwise dont render the component*/}
               {success && (
                 <div className="text-sm text-green-600 bg-green-50 p-3 rounded-md">
                   Account created successfully! Redirecting to login...
@@ -93,6 +124,15 @@ export function Signupform({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
+
+
+
+
+
+
+
+                {/*onchange -----> updates the password when we change the password
+                required ---> makes input mandatory in the form*/}
                 <Input 
                   id="password" 
                   type="password" 
@@ -101,12 +141,28 @@ export function Signupform({
                   required 
                 />
               </div>
+
+
+
+
+
+
+              {/*Disables loading when registering is in process
+              if is loading is true then it shows creating account otherwise signup*/}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Creating Account..." : "Sign Up"}
               </Button>
 
+
+
+
+
+
+
               <div className="text-center text-sm">
                 Already have an account?{" "}
+
+                {/* redirects to the login page */}
                 <a href="/login" className="underline underline-offset-4">
                   Login
                 </a>
