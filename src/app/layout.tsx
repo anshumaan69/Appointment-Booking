@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <div >
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -41,7 +41,7 @@ export default function RootLayout({
         </AuthProvider>
       </ThemeProvider>
       </body>
-      </div>
+
     </html>
   );
 }

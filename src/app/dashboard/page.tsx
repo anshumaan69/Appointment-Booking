@@ -30,7 +30,44 @@ export default function Dashboard() {
       
       const response = await fetch('/api/appointments/user')
       const data = await response.json()
-      1
+      
+      if (response.ok) {
+        setAppointments(data)
+      } else {
+        if (response.status === 401) {
+          router.push('/login')
+        } else {
+          setError(data.error || "Failed to fetch appointments")
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching appointments:', err)
+      setError("Network error. Please check your connection and try again.")
+    } finally {
+      setLoading(false)
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchAppointments()
+    } else {
+      router.push('/login')
+    }
+  }, [isLoggedIn, fetchAppointments, router])
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+
+  if (!isLoggedIn) {
+    return <div>Please log in...</div>
+  }
       
   return (
     <div className="container mx-auto p-6">
@@ -40,9 +77,6 @@ export default function Dashboard() {
           <Link href="/book-appointment">
             <Button>Book New Appointment</Button>
           </Link>
-          <Button onClick={chatBot} variant="outline">
-            ChatBot
-          </Button> 
           <Button onClick={logout} variant="outline">
             Logout
           </Button> 
