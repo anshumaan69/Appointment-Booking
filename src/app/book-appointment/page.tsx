@@ -1,9 +1,12 @@
 "use client"
 
-import React, { useState,useEffect} from 'react'
-import  { Calendar24 } from '@/components/DateAndTime'
+import React, { useState } from 'react'
+import  { Calendar24 } from '@/components/NewDateAndTime'
 import { SelectDemo } from '@/components/selector'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useRouter } from 'next/navigation'
+import { CheckCircle } from 'lucide-react'
 
 const BookingPage = () => {
   // State to store form values
@@ -13,7 +16,7 @@ const BookingPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string>("")
   const [success, setSuccess] = useState<string>("")
-  
+  const router = useRouter()
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,6 +61,11 @@ const BookingPage = () => {
         setSelectedDate(null)
         setSelectedTime("")
         setSelectedService("")
+        
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 2000)
       } else {
         // API returned an error
         setError(data.error || "Failed to book appointment. Please try again.")
@@ -71,55 +79,73 @@ const BookingPage = () => {
     }
   }
 
-  return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Book Appointment</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Error message */}
-        {error && (
-          <div className="text-red-600 bg-red-50 p-3 rounded-md text-sm">
-            {error}
-          </div>
-        )}
-        
-        {/* Success message */}
-        {success && (
-          <div className="text-green-600 bg-green-50 p-3 rounded-md text-sm">
-            {success}
-          </div>
-        )}
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardContent className="text-center py-8">
+            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-green-600 mb-2">Booking Confirmed!</h2>
+            <p className="text-gray-600 mb-4">{success}</p>
+            <p className="text-sm text-gray-500">Redirecting to dashboard...</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
-        {/* Date and Time Picker */}
-        <Calendar24 
-          onDateChange={setSelectedDate}
-          onTimeChange={setSelectedTime}
-          selectedDate={selectedDate}
-          selectedTime={selectedTime}
-        />
-        
-        {/* Service Selector */}
-        <SelectDemo 
-          onServiceChange={setSelectedService}
-          selectedService={selectedService}
-        />
-        
-        {/* Submit Button */}
-        <Button 
-          type="submit" 
-          className="w-full"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Booking..." : "Book Appointment"}
-        </Button>
-        
-        {/* Debug info - remove this later */}
-        <div className="text-sm text-gray-500 mt-4">
-          <p>Selected Date: {selectedDate?.toLocaleDateString() || "None"}</p>
-          <p>Selected Time: {selectedTime || "None"}</p>
-          <p>Selected Service: {selectedService || "None"}</p>
-        </div>
-      </form>
+  return (
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-2xl mx-auto p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center">Book Your Appointment</CardTitle>
+            <p className="text-center text-gray-600">Choose your preferred date, time, and service</p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Error message */}
+              {error && (
+                <div className="text-red-600 bg-red-50 p-4 rounded-md border border-red-200">
+                  <p className="font-medium">{error}</p>
+                </div>
+              )}
+
+              {/* Date and Time Picker */}
+              <Calendar24 
+                onDateChange={setSelectedDate}
+                onTimeChange={setSelectedTime}
+                selectedDate={selectedDate}
+                selectedTime={selectedTime}
+              />
+              
+              {/* Service Selector */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Select Service</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SelectDemo 
+                    onServiceChange={setSelectedService}
+                    selectedService={selectedService}
+                  />
+                </CardContent>
+              </Card>
+              
+              {/* Submit Button */}
+              <div className="pt-4">
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-lg"
+                  disabled={isSubmitting || !selectedDate || !selectedTime || !selectedService}
+                >
+                  {isSubmitting ? "Booking..." : "Book Appointment"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

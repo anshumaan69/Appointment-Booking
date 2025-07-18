@@ -153,7 +153,7 @@ export default function Home() {
               Join thousands of satisfied users who trust our appointment booking system.
             </p>
             <Link href="/register">
-              <Button size="lg" className="text-lg px-6 py-3 border-2">
+              <Button size="lg" className="text-lg px-8 py-3">
                 Create Free Account
               </Button>
             </Link>
