@@ -18,29 +18,7 @@ const doctorFAQs: Record<string, string> = {
   "consultation": "A general consultation includes a comprehensive health assessment, discussion of your symptoms or concerns, physical examination if needed, and treatment recommendations.",
   
   "check up": "Our health check-ups include vital signs monitoring, basic health screening, lifestyle assessment, and preventive care recommendations. Regular check-ups help maintain your overall health.",
-   ✓ Starting...
- ✓ Ready in 1410ms
- ○ Compiling / ...
- ✓ Compiled / in 2.3s
- GET / 200 in 2749ms
- ○ Compiling /api/me ...
- ✓ Compiled /api/me in 543ms
-Connection Successfull
- GET /api/me 200 in 3409ms
- ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
-   ▲ Next.js 15.3.5 (Turbopack)
-   - Local:        http://localhost:3000
-   - Network:      http://192.168.29.118:3000
-   - Environments: .env.local
-
- ✓ Starting...
- ✓ Ready in 2.3s
- ○ Compiling / ...
- ✓ Compiled / in 2.5s
- ⨯ [Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.] {
-  digest: '1571373267'
-}
- GET / 500 in 3375ms
+  
   "prepare for visit": "Please bring a valid ID, insurance card (if applicable), list of current medications, and any relevant medical records. Arrive 15 minutes early for check-in.",
   
   "what to bring": "Bring your ID, insurance information, current medications list, previous test results, and any questions you'd like to discuss with the doctor.",
