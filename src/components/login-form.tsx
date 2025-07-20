@@ -12,8 +12,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/AuthContext"
 
 export function LoginForm({
   className,
@@ -23,19 +21,44 @@ export function LoginForm({
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
   const [error,setError]=useState("")
-  const router=useRouter()
-  const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
-    const success = await login(email, password)
+    console.log('=== LOGIN ATTEMPT ===')
+    console.log('Email:', email)
     
-    if (success) {
-      router.push("/dashboard")
-    } else {
-      setError("Login failed. Please check your credentials.")
+    try {
+      // Make the API call directly to see what we get
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      
+      const data = await response.json()
+      console.log('Direct API response:', data)
+      
+      if (data.success && data.user) {
+        console.log('User role from API:', data.user.role)
+        console.log('Is admin?', data.user.role === 'admin')
+        
+        // Direct redirect based on API response
+        if (data.user.role === 'admin') {
+          console.log('Admin detected - redirecting to admin dashboard')
+          window.location.replace('/admin/dashboard')
+        } else {
+          console.log('Regular user - redirecting to dashboard')
+          window.location.replace('/dashboard')
+        }
+      } else {
+        console.log('Login failed:', data)
+        setError("Login failed. Please check your credentials.")
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      setError("Network error occurred.")
     }
   }
   return (

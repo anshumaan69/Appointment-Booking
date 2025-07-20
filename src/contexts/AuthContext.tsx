@@ -6,13 +6,16 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 interface User {
   name: string
   email: string
+  role: string
 }
 
 // What our context provides
 interface AuthContextType {
   user: User | null
   isLoggedIn: boolean
-  login: (email: string, password: string) => Promise<boolean>
+  isAdmin: boolean
+  isLoading: boolean
+  login: (email: string, password: string, onSuccess?: (user: User) => void) => Promise<boolean>
   register: (name: string, email: string, password: string) => Promise<boolean>
   logout: () => void
 }
@@ -23,29 +26,42 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 // The provider component (wraps your app and provides the data)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   
   // Simple check: if we have a user, they're logged in
   const isLoggedIn = user !== null
+  const isAdmin = user?.role === 'admin'
 
   // Login function - call your API and set user data
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string, onSuccess?: (user: User) => void): Promise<boolean> => {
     try {
+      console.log('AuthContext: Making login request for:', email)
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
       
+      console.log('AuthContext: Login response status:', response.status)
       const data = await response.json()
+      console.log('AuthContext: Login response data:', data)
       
       if (data.success && data.user) {
-        setUser(data.user)  // Save user data
+        console.log('AuthContext: Setting user data:', data.user)
+        setUser(data.user)  // Save user data (including role)
+        
+        // Call the success callback with user data
+        if (onSuccess) {
+          onSuccess(data.user)
+        }
+        
         return true         // Login successful
       } else {
+        console.log('AuthContext: Login failed - no success or user data')
         return false        // Login failed
       }
     } catch (error) {
-      console.error('Login failed:', error)
+      console.error('AuthContext: Login failed:', error)
       return false
     }
   }
@@ -93,6 +109,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error('Auth check failed:', error)
+    } finally {
+      setIsLoading(false) // Auth check complete
     }
   }
 
@@ -105,6 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     isLoggedIn,
+    isAdmin,
+    isLoading,
     login,
     register,
     logout

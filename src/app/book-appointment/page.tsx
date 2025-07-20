@@ -86,8 +86,8 @@ const BookingPage = () => {
           <CardContent className="text-center py-8">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-green-600 mb-2">Booking Confirmed!</h2>
-            <p className="text-gray-600 mb-4">{success}</p>
-            <p className="text-sm text-gray-500">Redirecting to dashboard...</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">{success}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Redirecting to dashboard...</p>
           </CardContent>
         </Card>
       </div>
@@ -95,23 +95,22 @@ const BookingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-2xl mx-auto p-6">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">Book Your Appointment</CardTitle>
-            <p className="text-center text-gray-600">Choose your preferred date, time, and service</p>
+            <p className="text-center text-gray-600 dark:text-gray-300">Choose your preferred date, time, and service</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Error message */}
               {error && (
-                <div className="text-red-600 bg-red-50 p-4 rounded-md border border-red-200">
+                <div className="text-red-600 bg-red-50 dark:bg-red-900/20 p-4 rounded-md border border-red-200 dark:border-red-800">
                   <p className="font-medium">{error}</p>
                 </div>
               )}
 
-              {/* Date and Time Picker */}
               <Calendar24 
                 onDateChange={setSelectedDate}
                 onTimeChange={setSelectedTime}
@@ -119,7 +118,6 @@ const BookingPage = () => {
                 selectedTime={selectedTime}
               />
               
-              {/* Service Selector */}
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Select Service</CardTitle>

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { useEffect, useState, useCallback } from "react"
-import { ModeToggle } from "@/components/Dark-toggle"
 import Link from "next/link"
 import {
   Table,
@@ -73,15 +72,7 @@ export default function Dashboard() {
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <Link href="/book-appointment">
-            <Button>Book New Appointment</Button>
-          </Link>
-          <Button onClick={logout} variant="outline">
-            Logout
-          </Button> 
-          <ModeToggle />
-        </div>
+      
       </div>
       
       <Card className="mb-6">

@@ -23,6 +23,7 @@ export async function POST(req: Request){
     return Response.json({success:true,user:{
         name:user.name,
         email:user.email,
+        role:user.role,
     }})
 
 }

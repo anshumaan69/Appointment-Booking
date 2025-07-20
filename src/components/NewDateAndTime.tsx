@@ -15,7 +15,6 @@ interface Calendar24Props {
 export function Calendar24({ 
   onDateChange, 
   onTimeChange, 
-  selectedDate, 
   selectedTime 
 }: Calendar24Props) {
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([])
@@ -56,7 +55,7 @@ export function Calendar24({
     setSelectedDateStr(dateStr)
     const date = new Date(dateStr)
     onDateChange?.(date)
-    onTimeChange?.("") // Reset time selection
+    onTimeChange?.("")
   }
 
   const handleTimeSelect = (timeValue: string) => {
@@ -65,7 +64,6 @@ export function Calendar24({
 
   return (
     <div className="space-y-6">
-      {/* Date Selection */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Select Date</CardTitle>
@@ -89,7 +87,6 @@ export function Calendar24({
         </CardContent>
       </Card>
 
-      {/* Time Selection */}
       {selectedDateStr && (
         <Card>
           <CardHeader>
@@ -109,7 +106,7 @@ export function Calendar24({
                     variant={selectedTime === slot.value ? "default" : "outline"}
                     className={`justify-center h-auto p-3 ${
                       !slot.available 
-                        ? "opacity-50 cursor-not-allowed bg-red-50 text-red-500 border-red-200" 
+                        ? "opacity-50 cursor-not-allowed bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400 border-red-200 dark:border-red-800" 
                         : ""
                     }`}
                     onClick={() => slot.available && handleTimeSelect(slot.value)}
@@ -118,7 +115,7 @@ export function Calendar24({
                     <div className="text-center">
                       <div className="font-medium">{slot.display}</div>
                       {!slot.available && (
-                        <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded mt-1 inline-block">
+                        <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded mt-1 inline-block">
                           Booked
                         </span>
                       )}

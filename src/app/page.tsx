@@ -88,7 +88,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 dark:text-gray-300">
-                Get help whenever you need it with our AI-powered chatbot 
+                Get help whenever you need it with our AI-powered medical assistant chatbot 
                 and dedicated support team.
               </p>
             </CardContent>

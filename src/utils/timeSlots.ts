@@ -7,19 +7,21 @@ export interface TimeSlot {
 export const generateTimeSlots = (bookedSlots: string[] = []): TimeSlot[] => {
   const slots: TimeSlot[] = [];
   
-  // Generate slots from 9 AM to 9 PM (30-minute intervals)
+  const normalizedBookedSlots = bookedSlots.map(slot => {
+    return slot.includes(':') && slot.split(':').length === 2 ? `${slot}:00` : slot;
+  });
+  
   for (let hour = 9; hour <= 21; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
-      // Skip 9:30 PM and later
       if (hour === 21 && minute > 0) break;
       
-      const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
       const timeDisplay = formatTo12Hour(timeValue);
       
       slots.push({
         value: timeValue,
         display: timeDisplay,
-        available: !bookedSlots.includes(timeValue)
+        available: !normalizedBookedSlots.includes(timeValue)
       });
     }
   }

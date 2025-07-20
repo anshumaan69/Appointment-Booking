@@ -1,4 +1,3 @@
-
 import connectDB from "@/utils/dbconfig";
 import Appointment from "@/models/appointment";
 import Service from "@/models/service";
