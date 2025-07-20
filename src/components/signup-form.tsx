@@ -172,10 +172,10 @@ export function Signupform({
           </form>
           <div className="bg-muted relative hidden md:block">
             <Image
-              src="/placeholder.svg"
-              alt="Image"
+              src="/medical-signup.svg"
+              alt="Medical appointment booking illustration"
               fill
-              className="object-cover dark:brightness-[0.2] dark:grayscale"
+              className="object-cover dark:brightness-[0.8] dark:grayscale"
             />
           </div>
         </CardContent>

@@ -1,0 +1,79 @@
+<svg width="400" height="600" viewBox="0 0 400 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="600" fill="url(#bgGradient)"/>
+  
+  <!-- Medical cross symbol -->
+  <g transform="translate(150, 150)">
+    <rect x="40" y="10" width="20" height="80" fill="url(#accentGradient)" rx="4"/>
+    <rect x="10" y="40" width="80" height="20" fill="url(#accentGradient)" rx="4"/>
+  </g>
+  
+  <!-- Stethoscope -->
+  <g transform="translate(80, 280)">
+    <path d="M50 20 Q50 10, 60 10 Q70 10, 70 20 L70 40 Q70 50, 60 50 L40 50 Q30 50, 30 40 L30 20 Q30 10, 40 10 Q50 10, 50 20" 
+          fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+    <path d="M50 50 L50 80 Q50 90, 60 90 Q70 90, 70 80 L70 70" 
+          fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="70" cy="65" r="8" fill="#3b82f6"/>
+    <circle cx="35" cy="15" r="6" fill="#64748b"/>
+    <circle cx="65" cy="15" r="6" fill="#64748b"/>
+  </g>
+  
+  <!-- Heart rate line -->
+  <g transform="translate(50, 400)">
+    <path d="M0 20 L40 20 L50 5 L60 35 L70 10 L80 25 L90 20 L130 20 L140 5 L150 35 L160 10 L170 25 L180 20 L220 20 L230 5 L240 35 L250 10 L260 25 L270 20 L300 20" 
+          fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Medical appointment calendar -->
+  <g transform="translate(120, 480)">
+    <rect x="0" y="0" width="160" height="100" fill="white" rx="8" stroke="#e2e8f0" stroke-width="2"/>
+    <rect x="0" y="0" width="160" height="25" fill="#3b82f6" rx="8"/>
+    <rect x="0" y="17" width="160" height="8" fill="#3b82f6"/>
+    
+    <!-- Calendar grid -->
+    <g fill="#94a3b8" font-family="Arial" font-size="10">
+      <text x="20" y="45" fill="#1f2937" font-weight="bold">APPOINTMENT</text>
+      <text x="20" y="58" fill="#64748b">Today 2:30 PM</text>
+      <text x="20" y="70" fill="#64748b">Dr. Smith</text>
+      <text x="20" y="82" fill="#64748b">General Checkup</text>
+    </g>
+    
+    <!-- Calendar rings -->
+    <circle cx="30" cy="8" r="3" fill="white"/>
+    <circle cx="130" cy="8" r="3" fill="white"/>
+  </g>
+  
+  <!-- Decorative pills -->
+  <g transform="translate(300, 200)">
+    <ellipse cx="15" cy="8" rx="12" ry="6" fill="#10b981" opacity="0.8"/>
+    <ellipse cx="15" cy="25" rx="10" ry="5" fill="#f59e0b" opacity="0.8"/>
+    <ellipse cx="15" cy="40" rx="8" ry="4" fill="#ef4444" opacity="0.8"/>
+  </g>
+  
+  <!-- Medical chart lines -->
+  <g transform="translate(20, 50)" opacity="0.3">
+    <line x1="0" y1="0" x2="60" y2="0" stroke="#64748b" stroke-width="1"/>
+    <line x1="0" y1="10" x2="80" y2="10" stroke="#64748b" stroke-width="1"/>
+    <line x1="0" y1="20" x2="50" y2="20" stroke="#64748b" stroke-width="1"/>
+    <line x1="0" y1="30" x2="70" y2="30" stroke="#64748b" stroke-width="1"/>
+  </g>
+  
+  <!-- Health shield -->
+  <g transform="translate(320, 350)">
+    <path d="M20 10 Q30 5, 40 10 L40 25 Q40 35, 30 40 Q20 35, 20 25 Z" fill="#10b981" opacity="0.9"/>
+    <path d="M25 18 L28 22 L35 15" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
