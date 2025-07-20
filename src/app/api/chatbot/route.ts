@@ -74,7 +74,8 @@ function isQuickFAQ(message: string): string | null {
 
 async function getAIResponse(userMessage: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Using Gemini Flash 1.5 - optimized for fast, efficient responses
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const prompt = `${MEDICAL_CONTEXT}
 
@@ -88,7 +89,7 @@ Please provide a helpful, accurate response following the medical guidelines abo
     
     return text;
   } catch (error) {
-    console.error('Gemini AI Error:', error);
+    console.error('Gemini Flash API Error:', error);
     throw error;
   }
 }

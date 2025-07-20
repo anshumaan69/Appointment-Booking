@@ -11,7 +11,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: "bot",
-      text: "Hello! I'm your medical assistant. I can help you with information about appointments, our services, clinic hours, and general health questions. How can I assist you today?"
+      text: "Hello! I'm your AI medical assistant powered by Gemini Flash 1.5. I can provide fast, intelligent responses about appointments, our services, general health questions, and guide you to appropriate care. How can I assist you today?"
     }
   ])
   const [input, setInput] = useState("")

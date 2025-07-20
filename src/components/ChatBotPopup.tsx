@@ -19,7 +19,7 @@ const ChatBotPopup = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello! I'm your AI medical assistant powered by advanced AI technology. I can help you with information about appointments, our services, general health questions, and guide you to appropriate care. How can I assist you today?",
+      text: "Hello! I'm your AI medical assistant powered by Gemini Flash 1.5. I can provide fast, intelligent responses about appointments, our services, general health questions, and guide you to appropriate care. How can I assist you today?",
       sender: 'bot',
       timestamp: new Date(),
       source: 'greeting'
