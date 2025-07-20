@@ -1,83 +1,96 @@
 import { NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface ChatMessage {
   message: string;
+  conversationHistory?: Array<{role: string, content: string}>;
 }
 
-const doctorFAQs: Record<string, string> = {
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+// Quick FAQ responses for common appointment-related questions
+const quickFAQs: Record<string, string> = {
   "book appointment": "To book an appointment, click on 'Book Appointment' in the navigation menu. You can select your preferred date, time, and service. Our available services include consultations, check-ups, and specialized treatments.",
-  
   "appointment hours": "Our clinic hours are Monday to Friday 9:00 AM to 9:00 PM, and Saturday 9:00 AM to 5:00 PM. We're closed on Sundays and public holidays.",
-  
   "cancel appointment": "You can cancel your appointment up to 24 hours before your scheduled time. Please contact us as soon as possible if you need to cancel or reschedule.",
-  
   "reschedule": "To reschedule your appointment, please cancel your current booking and create a new one with your preferred time slot. You can also call our office for assistance.",
-  
-  "services": "We offer general consultations, health check-ups, preventive care, chronic disease management, vaccinations, minor procedures, and specialist referrals.",
-  
-  "consultation": "A general consultation includes a comprehensive health assessment, discussion of your symptoms or concerns, physical examination if needed, and treatment recommendations.",
-  
-  "check up": "Our health check-ups include vital signs monitoring, basic health screening, lifestyle assessment, and preventive care recommendations. Regular check-ups help maintain your overall health.",
-  
-  "prepare for visit": "Please bring a valid ID, insurance card (if applicable), list of current medications, and any relevant medical records. Arrive 15 minutes early for check-in.",
-  
-  "what to bring": "Bring your ID, insurance information, current medications list, previous test results, and any questions you'd like to discuss with the doctor.",
-  
-  "first visit": "For your first visit, please arrive 30 minutes early to complete registration forms. Bring your medical history, current medications, and insurance information.",
-  
-  "insurance": "We accept most major insurance plans. Please contact our office to verify if your specific insurance is accepted. We also offer self-pay options.",
-  
-  "payment": "We accept cash, credit cards, debit cards, and most insurance plans. Payment is due at the time of service unless prior arrangements have been made.",
-  
-  "cost": "Consultation fees vary by service type. Please contact our office for specific pricing information. We'll provide a cost estimate before your appointment.",
-  
   "emergency": "For medical emergencies, please call 911 or go to your nearest emergency room immediately. Our clinic handles non-emergency appointments and routine care.",
-  
-  "urgent care": "For urgent but non-emergency issues, please call our office. We may be able to accommodate same-day appointments or provide guidance on appropriate care.",
-  
-  "prescription": "Prescriptions can be sent electronically to your preferred pharmacy. Please provide your pharmacy information during your visit. Prescription refills may require a follow-up appointment.",
-  
-  "medication": "Please bring a complete list of all medications, supplements, and vitamins you're currently taking. This includes over-the-counter medications and herbal supplements.",
-  
-  "test results": "Test results are typically available within 2-5 business days. We'll contact you with results and any necessary follow-up instructions. You can also access results through our patient portal.",
-  
-  "follow up": "Follow-up appointments are scheduled based on your specific needs and treatment plan. The doctor will discuss timing during your visit.",
-  
-  "preventive care": "We emphasize preventive care including regular screenings, vaccinations, lifestyle counseling, and early detection of health issues. Prevention is key to maintaining good health.",
-  
-  "healthy lifestyle": "We provide guidance on nutrition, exercise, stress management, sleep hygiene, and other lifestyle factors that impact your health and wellbeing.",
-  
   "contact": "You can reach our office during business hours for appointments, questions, or concerns. After hours, please call for urgent matters or visit the emergency room for emergencies.",
-  
-  "location": "Our clinic is conveniently located with easy access and parking. Detailed directions and parking information are available on our website.",
-  
-  "patient portal": "Our patient portal allows you to view test results, request prescription refills, send messages to your care team, and manage your appointments online.",
-  
-  "telemedicine": "We offer telemedicine appointments for certain types of consultations. Please ask if your condition is suitable for a virtual visit."
+  "insurance": "We accept most major insurance plans. Please contact our office to verify if your specific insurance is accepted. We also offer self-pay options.",
+  "payment": "We accept cash, credit cards, debit cards, and most insurance plans. Payment is due at the time of service unless prior arrangements have been made."
 };
 
-function findBestMatch(userMessage: string): string {
-  const message = userMessage.toLowerCase();
-  
-  for (const [key, response] of Object.entries(doctorFAQs)) {
-    if (message.includes(key)) {
+const MEDICAL_CONTEXT = `
+You are a helpful medical assistant for an appointment booking system at a healthcare clinic. Your role is to:
+
+1. PROVIDE GENERAL HEALTH INFORMATION - Share general health education, wellness tips, and preventive care guidance
+2. GUIDE TO APPROPRIATE CARE - Help users understand when to seek different types of medical care (emergency, urgent, routine)
+3. APPOINTMENT ASSISTANCE - Help with booking, scheduling, preparation for appointments, and understanding clinic services
+4. CLINIC INFORMATION - Provide information about our services, hours, procedures, and policies
+
+CLINIC SERVICES AVAILABLE:
+- General consultations and physical exams
+- Health check-ups and wellness visits
+- Preventive care and screenings
+- Chronic disease management
+- Vaccinations and immunizations
+- Minor procedures
+- Specialist referrals
+- Telemedicine appointments
+
+IMPORTANT MEDICAL GUIDELINES:
+- NEVER provide specific medical diagnoses
+- NEVER recommend specific medications, dosages, or treatments
+- NEVER replace professional medical advice
+- ALWAYS recommend consulting with healthcare providers for specific medical concerns
+- For urgent symptoms, direct to emergency services or immediate medical care
+- Include appropriate medical disclaimers when discussing health topics
+
+EMERGENCY SYMPTOMS (direct to 911/ER immediately):
+- Chest pain, difficulty breathing, severe allergic reactions
+- Signs of stroke (face drooping, arm weakness, speech difficulty)
+- Severe injuries, uncontrolled bleeding
+- Loss of consciousness, severe confusion
+- Severe abdominal pain, persistent vomiting
+
+URGENT SYMPTOMS (same-day care needed):
+- High fever, persistent pain
+- Minor injuries requiring evaluation
+- Sudden onset of concerning symptoms
+
+Keep responses helpful, empathetic, and professionally appropriate. Always prioritize patient safety.
+`;
+
+function isQuickFAQ(message: string): string | null {
+  const lowerMessage = message.toLowerCase();
+  for (const [key, response] of Object.entries(quickFAQs)) {
+    if (lowerMessage.includes(key)) {
       return response;
     }
   }
-  
-  if (message.includes("hello") || message.includes("hi") || message.includes("hey")) {
-    return "Hello! I'm here to help answer your questions about our medical services, appointments, and general health information. How can I assist you today?";
+  return null;
+}
+
+async function getAIResponse(userMessage: string): Promise<string> {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    
+    const prompt = `${MEDICAL_CONTEXT}
+
+User Question: ${userMessage}
+
+Please provide a helpful, accurate response following the medical guidelines above. Keep responses concise but informative (2-3 paragraphs max). Include appropriate medical disclaimers when discussing health topics.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    return text;
+  } catch (error) {
+    console.error('Gemini AI Error:', error);
+    throw error;
   }
-  
-  if (message.includes("thank") || message.includes("thanks")) {
-    return "You're welcome! If you have any other questions about our medical services or need help booking an appointment, feel free to ask.";
-  }
-  
-  if (message.includes("help")) {
-    return "I can help you with information about:\\n• Booking and managing appointments\\n• Our medical services and consultations\\n• Clinic hours and location\\n• Insurance and payment options\\n• Preparing for your visit\\n• General health questions\\n\\nWhat would you like to know?";
-  }
-  
-  return "I'd be happy to help! I can provide information about booking appointments, our medical services, clinic hours, insurance, and general health questions. Could you please rephrase your question or ask about one of these topics?";
 }
 
 export async function POST(request: Request) {
@@ -91,22 +104,61 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    
-    const response = findBestMatch(userMessage);
+
+    // Check for quick FAQ responses first (for common appointment questions)
+    const quickResponse = isQuickFAQ(userMessage);
+    if (quickResponse) {
+      return NextResponse.json({
+        success: true,
+        response: quickResponse,
+        source: "faq"
+      });
+    }
+
+    // Handle greetings
+    const lowerMessage = userMessage.toLowerCase();
+    if (lowerMessage.includes("hello") || lowerMessage.includes("hi") || lowerMessage.includes("hey")) {
+      return NextResponse.json({
+        success: true,
+        response: "Hello! I'm your AI medical assistant. I can help answer questions about our medical services, appointments, general health information, and guide you to appropriate care. How can I assist you today?",
+        source: "greeting"
+      });
+    }
+
+    if (lowerMessage.includes("thank") || lowerMessage.includes("thanks")) {
+      return NextResponse.json({
+        success: true,
+        response: "You're welcome! If you have any other questions about our medical services, health information, or need help booking an appointment, feel free to ask.",
+        source: "thanks"
+      });
+    }
+
+    // For complex medical queries, use Gemini AI
+    const aiResponse = await getAIResponse(userMessage);
     
     return NextResponse.json({
       success: true,
-      response: response
+      response: aiResponse,
+      source: "ai"
     });
     
   } catch (error) {
     console.error("Chatbot API error:", error);
+    
+    // Fallback response for when AI fails
+    const fallbackResponse = `I understand you have a medical question. While I can provide general health information, I recommend scheduling an appointment with one of our healthcare providers for personalized medical advice.
+
+For urgent concerns, please call our office directly at our clinic hours (Mon-Fri 9AM-9PM, Sat 9AM-5PM) or seek immediate medical attention if it's an emergency.
+
+Would you like help booking an appointment? You can use the 'Book Appointment' feature in the navigation menu.`;
+    
     return NextResponse.json(
       { 
-        error: "Failed to process your message. Please try again.",
-        response: "I'm sorry, I'm having trouble processing your request right now. Please try again or contact our office directly for assistance."
+        success: true,
+        response: fallbackResponse,
+        source: "fallback"
       },
-      { status: 500 }
+      { status: 200 }
     );
   }
 }

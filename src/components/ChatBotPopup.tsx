@@ -11,6 +11,7 @@ interface Message {
   text: string
   sender: 'user' | 'bot'
   timestamp: Date
+  source?: 'faq' | 'ai' | 'greeting' | 'thanks' | 'fallback'
 }
 
 const ChatBotPopup = () => {
@@ -18,9 +19,10 @@ const ChatBotPopup = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hello! I'm your medical assistant. I can help you with information about appointments, our services, clinic hours, and general health questions. How can I assist you today?",
+      text: "Hello! I'm your AI medical assistant powered by advanced AI technology. I can help you with information about appointments, our services, general health questions, and guide you to appropriate care. How can I assist you today?",
       sender: 'bot',
-      timestamp: new Date()
+      timestamp: new Date(),
+      source: 'greeting'
     }
   ])
   const [inputMessage, setInputMessage] = useState('')
@@ -65,7 +67,8 @@ const ChatBotPopup = () => {
           id: (Date.now() + 1).toString(),
           text: data.response,
           sender: 'bot',
-          timestamp: new Date()
+          timestamp: new Date(),
+          source: data.source || 'unknown'
         }
         setMessages(prev => [...prev, botMessage])
       } else {
@@ -147,18 +150,27 @@ const ChatBotPopup = () => {
                 >
                   <div className="flex items-start gap-2">
                     {message.sender === 'bot' && (
-                      <Bot className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                      <Bot className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
+                        message.source === 'ai' ? 'text-green-600' : ''
+                      }`} />
                     )}
                     {message.sender === 'user' && (
                       <User className="h-4 w-4 mt-0.5 flex-shrink-0" />
                     )}
                     <div className="flex-1">
                       <p className="text-sm whitespace-pre-line">{message.text}</p>
-                      <p className={`text-xs mt-1 ${
-                        message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
-                      }`}>
-                        {formatTime(message.timestamp)}
-                      </p>
+                      <div className="flex items-center justify-between mt-1">
+                        <p className={`text-xs ${
+                          message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
+                        }`}>
+                          {formatTime(message.timestamp)}
+                        </p>
+                        {message.sender === 'bot' && message.source === 'ai' && (
+                          <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                            ✨ AI Enhanced
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -169,11 +181,14 @@ const ChatBotPopup = () => {
               <div className="flex justify-start">
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
                   <div className="flex items-center gap-2">
-                    <Bot className="h-4 w-4" />
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.1s]"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <Bot className="h-4 w-4 text-green-600" />
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:0.1s]"></div>
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                      </div>
+                      <span className="text-xs text-gray-600">AI is thinking...</span>
                     </div>
                   </div>
                 </div>
