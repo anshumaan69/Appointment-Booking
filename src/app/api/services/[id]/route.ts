@@ -5,11 +5,12 @@ import { NextResponse } from "next/server";
 // GET - Get a specific service by ID
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const service = await Service.findById(params.id);
+    const { id } = await context.params;
+    const service = await Service.findById(id);
     
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
@@ -25,15 +26,16 @@ export async function GET(
 // PUT - Update a service
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+    const { id } = await context.params;
     const body = await request.json();
     const { name, description, duration, price } = body;
     
     const updatedService = await Service.findByIdAndUpdate(
-      params.id,
+      id,
       { name, description, duration, price },
       { new: true, runValidators: true }
     );
@@ -52,12 +54,13 @@ export async function PUT(
 // DELETE - Delete a service
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
+    const { id } = await context.params;
     
-    const deletedService = await Service.findByIdAndDelete(params.id);
+    const deletedService = await Service.findByIdAndDelete(id);
     
     if (!deletedService) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });

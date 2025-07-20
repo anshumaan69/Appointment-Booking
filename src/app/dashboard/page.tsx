@@ -15,9 +15,23 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+interface Appointment {
+  _id: string
+  userId: string
+  serviceName: string
+  timeSlot: string
+  date: string
+  time: string
+  status: string
+  createdAt: string
+  service?: {
+    name: string
+  }
+}
+
 export default function Dashboard() {
-  const { user, isLoggedIn, logout } = useAuth()
-  const [appointments, setAppointments] = useState([] as any)
+  const { user, isLoggedIn } = useAuth()
+  const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const router = useRouter()

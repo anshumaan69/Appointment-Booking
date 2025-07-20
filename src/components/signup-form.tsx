@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/AuthContext"
+import Image from "next/image"
 
 export function Signupform({
   className,
@@ -170,10 +171,11 @@ export function Signupform({
             </div>
           </form>
           <div className="bg-muted relative hidden md:block">
-            <img
+            <Image
               src="/placeholder.svg"
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              fill
+              className="object-cover dark:brightness-[0.2] dark:grayscale"
             />
           </div>
         </CardContent>
